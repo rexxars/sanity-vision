@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import {Value} from 'react-object'
+import JsonInspector from 'react-json-inspector'
 
 class ResultList extends React.PureComponent {
   constructor(props) {
@@ -26,31 +26,25 @@ class ResultList extends React.PureComponent {
     return this.state.expanded.indexOf(id) !== -1
   }
 
-  render() {
-    const docs = this.props.documents
-    if (!docs.length) {
-      return (
-        <div className="vision_no-results">
-          <p>No results found for query:</p>
-          <code>{this.props.query}</code>
-        </div>
-      )
-    }
+  shouldExpand(path, item) {
+    // Expand root-level nodes and refs
+    return !isNaN(path) || (item && item._ref)
+  }
 
+  render() {
     return (
-      <ul className="vision_result-list">
-        {docs.map(doc => (
-          <li key={doc._id}>
-            <Value label={doc._id} value={doc} isExpanded />
-          </li>
-        ))}
-      </ul>
+      <JsonInspector
+        className="vision_result-list"
+        data={this.props.documents}
+        isExpanded={this.shouldExpand}
+        search={false}
+        filterOptions={{ignoreCase: true}}
+      />
     )
   }
 }
 
 ResultList.propTypes = {
-  query: PropTypes.string.isRequired,
   documents: PropTypes.arrayOf(PropTypes.shape({
     _id: PropTypes.string.isRequired,
     _type: PropTypes.string.isRequired,

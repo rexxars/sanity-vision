@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react'
 import {storeState, getState} from '../util/localState'
 import QueryEditor from './QueryEditor'
 import Dropdown from './Dropdown'
-import ResultTable from './ResultTable'
 import ResultList from './ResultList'
+import NoResultsDialog from './NoResultsDialog'
 
 class VisionGui extends React.PureComponent {
   constructor() {
@@ -26,6 +26,7 @@ class VisionGui extends React.PureComponent {
     const dataset = evt.target.value
     storeState('dataset', dataset)
     this.context.client.config({dataset})
+    this.handleQueryExecution(this.state.query)
   }
 
   handleQueryExecution(query) {
@@ -42,6 +43,7 @@ class VisionGui extends React.PureComponent {
   render() {
     const {client} = this.context
     const {results, query} = this.state
+    const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
     return (
       <div className="vision-gui">
@@ -68,9 +70,10 @@ class VisionGui extends React.PureComponent {
             onExecute={this.handleQueryExecution}
             onChange={this.handleQueryChange}
           />
-
-          {results && <ResultList documents={results} query={query} />}
         </form>
+
+        {results && results.length > 0 && <ResultList documents={results} query={query} />}
+        {results && results.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
       </div>
     )
   }

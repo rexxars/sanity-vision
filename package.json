@@ -27,8 +27,7 @@
   "dependencies": {
     "in-publish": "^2.0.0",
     "moment": "^2.16.0",
-    "react-atoms": "^2.0.11",
-    "react-object": "^2.1.1",
+    "react-json-inspector": "^7.0.0",
     "react-spinner": "^0.2.6",
     "react-textarea-autosize": "^4.0.5"
   },
