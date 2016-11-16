@@ -1,0 +1,83 @@
+.home-menu {
+  padding: 0.5em;
+  text-align: center;
+  box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
+  background: #2d3e50;
+}
+
+.home-menu .pure-menu-heading {
+  color: white;
+  font-weight: 400;
+  font-size: 120%;
+  text-transform: none;
+}
+
+.vision {
+  padding: 1em;
+}
+
+.vision .vision_dataset-select label {
+  width: auto;
+}
+
+.vision .vision_query-editor {
+  width: 100%;
+  min-height: 75px;
+  resize: none;
+  margin-bottom: 1em;
+}
+
+.vision .vision_result-table {
+  width: 100%;
+}
+
+.vision .vision_result-list {
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+}
+
+.vision .vision_result-table tbody td {
+  cursor: pointer;
+}
+
+.vision .vision_execute-query-button {
+  float: right;
+}
+
+/* React spinner */
+.react-spinner {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  top: 50%;
+  left: 50%;
+}
+
+.react-spinner_bar {
+  -webkit-animation: react-spinner_spin 1.2s linear infinite;
+  -moz-animation: react-spinner_spin 1.2s linear infinite;
+  animation: react-spinner_spin 1.2s linear infinite;
+  border-radius: 5px;
+  background-color: #2d3e50;
+  position: absolute;
+  width: 20%;
+  height: 7.8%;
+  top: -3.9%;
+  left: -10%;
+}
+
+@keyframes react-spinner_spin {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}
+
+@-moz-keyframes react-spinner_spin {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}
+
+@-webkit-keyframes react-spinner_spin {
+ 0% { opacity: 1; }
+ 100% { opacity: 0.15; }
+}
