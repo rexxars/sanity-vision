@@ -13,11 +13,11 @@ class Vision extends Component {
 }
 
 Vision.propTypes = {
-  client: PropTypes.shape({fetch: PropTypes.func}).isRequired
+  client: PropTypes.shape({config: PropTypes.func}).isRequired
 }
 
 Vision.childContextTypes = {
-  client: PropTypes.shape({fetch: PropTypes.func}).isRequired
+  client: PropTypes.shape({config: PropTypes.func}).isRequired
 }
 
 module.exports = Vision

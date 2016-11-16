@@ -68,12 +68,17 @@
 }
 
 .vision .vision_execute-query-button.active {
-  background-size: contain;
-  background-size: 28px;
+  background-size: 25px;
   background-position: 5px 50%;
   background-repeat: no-repeat;
-  background-image: url('loading.svg');
+  background-image: url('loading.gif');
   padding-left: 40px;
+}
+
+.vision .vision-gui .react-spinner {
+  margin-top: 2em;
+  width: 64px;
+  height: 64px;
 }
 
 /* Json inspector */

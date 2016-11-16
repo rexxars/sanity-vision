@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import classNames from 'classnames'
 import {storeState, getState} from '../util/localState'
+import DelayedSpinner from './DelayedSpinner'
 import QueryEditor from './QueryEditor'
 import Dropdown from './Dropdown'
 import ResultList from './ResultList'
@@ -11,7 +12,11 @@ class VisionGui extends React.PureComponent {
   constructor() {
     super()
 
-    this.state = {query: getState('lastQuery'), queryInProgress: false}
+    const lastQuery = getState('lastQuery')
+    this.state = {
+      query: lastQuery,
+      queryInProgress: Boolean(lastQuery)
+    }
 
     this.handleChangeDataset = this.handleChangeDataset.bind(this)
     this.handleQueryExecution = this.handleQueryExecution.bind(this)
@@ -49,7 +54,7 @@ class VisionGui extends React.PureComponent {
   render() {
     const {client} = this.context
     const {error, query, queryInProgress} = this.state
-    const results = !error && this.state.results
+    const results = !error && !queryInProgress && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
     return (
@@ -84,6 +89,7 @@ class VisionGui extends React.PureComponent {
           />
         </form>
 
+        {queryInProgress && <DelayedSpinner />}
         {error && <QueryErrorDialog error={error} />}
         {results && results.length > 0 && <ResultList documents={results} query={query} />}
         {results && results.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
