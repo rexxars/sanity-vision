@@ -1,15 +1,17 @@
 import React, {PropTypes} from 'react'
+import classNames from 'classnames'
 import {storeState, getState} from '../util/localState'
 import QueryEditor from './QueryEditor'
 import Dropdown from './Dropdown'
 import ResultList from './ResultList'
 import NoResultsDialog from './NoResultsDialog'
+import QueryErrorDialog from './QueryErrorDialog'
 
 class VisionGui extends React.PureComponent {
   constructor() {
     super()
 
-    this.state = {query: getState('lastQuery')}
+    this.state = {query: getState('lastQuery'), queryInProgress: false}
 
     this.handleChangeDataset = this.handleChangeDataset.bind(this)
     this.handleQueryExecution = this.handleQueryExecution.bind(this)
@@ -18,7 +20,7 @@ class VisionGui extends React.PureComponent {
 
   componentDidMount() {
     if (this.state.query) {
-      this.handleQueryExecution(this.state.query)
+      this.handleQueryExecution()
     }
   }
 
@@ -26,14 +28,18 @@ class VisionGui extends React.PureComponent {
     const dataset = evt.target.value
     storeState('dataset', dataset)
     this.context.client.config({dataset})
-    this.handleQueryExecution(this.state.query)
+    this.handleQueryExecution()
   }
 
-  handleQueryExecution(query) {
+  handleQueryExecution() {
+    const query = this.state.query
     storeState('lastQuery', query)
+    this.setState({queryInProgress: true})
+
+    const queryInProgress = false
     this.context.client.fetch(query)
-      .then(results => this.setState({results, query}))
-      .catch(error => this.setState({error, query}))
+      .then(results => this.setState({results, query, queryInProgress, error: null}))
+      .catch(error => this.setState({error, query, queryInProgress}))
   }
 
   handleQueryChange(data) {
@@ -42,7 +48,8 @@ class VisionGui extends React.PureComponent {
 
   render() {
     const {client} = this.context
-    const {results, query} = this.state
+    const {error, query, queryInProgress} = this.state
+    const results = !error && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
     return (
@@ -60,7 +67,12 @@ class VisionGui extends React.PureComponent {
 
               <button
                 onClick={this.handleQueryExecution}
-                className="pure-button pure-button-primary vision_execute-query-button"
+                className={classNames(
+                  'pure-button',
+                  'pure-button-primary',
+                  'vision_execute-query-button',
+                  {active: queryInProgress}
+                )}
               >Run query</button>
             </div>
           </fieldset>
@@ -72,6 +84,7 @@ class VisionGui extends React.PureComponent {
           />
         </form>
 
+        {error && <QueryErrorDialog error={error} />}
         {results && results.length > 0 && <ResultList documents={results} query={query} />}
         {results && results.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
       </div>

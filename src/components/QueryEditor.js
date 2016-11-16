@@ -13,7 +13,7 @@ class QueryEditor extends React.PureComponent {
 
   handleKeyUp(evt) {
     if (evt.ctrlKey && evt.which === ENTER_KEY) {
-      this.props.onExecute(this.props.value)
+      this.props.onExecute()
     }
   }
 
@@ -28,6 +28,11 @@ class QueryEditor extends React.PureComponent {
         value={this.props.value}
         onChange={this.handleChange}
         onKeyUp={this.handleKeyUp}
+
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
       />
     )
   }

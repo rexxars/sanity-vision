@@ -25,6 +25,7 @@
     "admin"
   ],
   "dependencies": {
+    "classnames": "^2.2.5",
     "in-publish": "^2.0.0",
     "moment": "^2.16.0",
     "react-json-inspector": "^7.0.0",

@@ -3,8 +3,9 @@ import React, {PropTypes} from 'react'
 function NoResultsDialog(props) {
   return (
     <div className="vision_no-results">
+      <h2>No matches</h2>
       <p>No documents found in dataset <code>{props.dataset}</code> that match query:</p>
-      <code>{props.query}</code>
+      <pre><code>{props.query}</code></pre>
     </div>
   )
 }

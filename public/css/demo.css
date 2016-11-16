@@ -16,6 +16,11 @@
   padding: 1em;
 }
 
+.vision pre code {
+  display: block;
+  padding: 1em;
+}
+
 .vision code {
   padding: 0.2em 0 0.2em 0;
   background: rgba(0, 0, 0, 0.04);
@@ -31,6 +36,17 @@
   min-height: 75px;
   resize: none;
   margin-bottom: 1em;
+  font-family: Consolas, monospace;
+}
+
+.vision .vision_query-error {
+  background: #e74c3c;
+  color: #fff;
+  padding: 10px;
+}
+
+.vision .vision_query-error h2 {
+  margin-top: 0;
 }
 
 .vision .vision_result-table {
@@ -48,6 +64,16 @@
 
 .vision .vision_execute-query-button {
   float: right;
+  transition: padding-left 0.4s ease;
+}
+
+.vision .vision_execute-query-button.active {
+  background-size: contain;
+  background-size: 28px;
+  background-position: 5px 50%;
+  background-repeat: no-repeat;
+  background-image: url('loading.svg');
+  padding-left: 40px;
 }
 
 /* Json inspector */
