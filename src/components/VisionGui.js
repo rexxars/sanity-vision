@@ -1,8 +1,10 @@
 import React, {PropTypes} from 'react'
 import classNames from 'classnames'
 import {storeState, getState} from '../util/localState'
+import tryParseParams from '../util/tryParseParams'
 import DelayedSpinner from './DelayedSpinner'
 import QueryEditor from './QueryEditor'
+import ParamsEditor from './ParamsEditor'
 import Dropdown from './Dropdown'
 import ResultList from './ResultList'
 import NoResultsDialog from './NoResultsDialog'
@@ -13,14 +15,18 @@ class VisionGui extends React.PureComponent {
     super()
 
     const lastQuery = getState('lastQuery')
+    const lastParams = getState('lastParams')
     this.state = {
       query: lastQuery,
+      params: lastParams && tryParseParams(lastParams),
+      rawParams: lastParams,
       queryInProgress: Boolean(lastQuery)
     }
 
     this.handleChangeDataset = this.handleChangeDataset.bind(this)
     this.handleQueryExecution = this.handleQueryExecution.bind(this)
     this.handleQueryChange = this.handleQueryChange.bind(this)
+    this.handleParamsChange = this.handleParamsChange.bind(this)
   }
 
   componentDidMount() {
@@ -41,21 +47,33 @@ class VisionGui extends React.PureComponent {
   }
 
   handleQueryExecution() {
-    const query = this.state.query
+    const {query, params, rawParams} = this.state
+    const paramsError = params instanceof Error && params
     storeState('lastQuery', query)
-    this.setState({queryInProgress: Boolean(query), results: null})
-    if (!query) {
+    storeState('lastParams', rawParams)
+
+    this.setState({
+      queryInProgress: !paramsError && Boolean(query),
+      error: paramsError || undefined,
+      results: null
+    })
+
+    if (!query || paramsError) {
       return
     }
 
     const queryInProgress = false
-    this.context.client.fetch(query)
+    this.context.client.fetch(query, params)
       .then(results => this.setState({results, query, queryInProgress, error: null}))
       .catch(error => this.setState({error, query, queryInProgress}))
   }
 
   handleQueryChange(data) {
     this.setState({query: data.query})
+  }
+
+  handleParamsChange(data) {
+    this.setState({rawParams: data.raw, params: data.parsed})
   }
 
   render() {
@@ -89,10 +107,21 @@ class VisionGui extends React.PureComponent {
             </div>
           </fieldset>
 
+          <div className="headers">
+            <h3 className="query">Query</h3>
+            <h3 className="params">Params</h3>
+          </div>
+
           <QueryEditor
             value={this.state.query}
             onExecute={this.handleQueryExecution}
             onChange={this.handleQueryChange}
+          />
+
+          <ParamsEditor
+            value={this.state.rawParams}
+            onExecute={this.handleQueryExecution}
+            onChange={this.handleParamsChange}
           />
         </form>
 

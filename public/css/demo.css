@@ -31,12 +31,29 @@
   width: auto;
 }
 
-.vision .vision_query-editor {
-  width: 100%;
+.vision .vision_query-editor, .vision .vision_params-editor {
   min-height: 75px;
   resize: none;
   margin-bottom: 1em;
   font-family: Consolas, monospace;
+}
+
+.vision .headers h3 {
+  display: inline-block;
+  margin: 0 0 0.25em 0;
+}
+
+.vision .vision_query-editor, .vision .headers .query {
+  width: 70%;
+}
+
+.vision .vision_params-editor, .vision .headers .params {
+  width: 30%;
+}
+
+.vision .vision_params-editor.invalid {
+  background: #e74c3c;
+  color: #fff;
 }
 
 .vision .vision_query-error {
