@@ -24,6 +24,10 @@ class VisionGui extends React.PureComponent {
   }
 
   componentDidMount() {
+    const firstDataset = this.props.datasets[0] && this.props.datasets[0].name
+    const dataset = getState('dataset', firstDataset)
+    this.context.client.config({dataset})
+
     if (this.state.query) {
       this.handleQueryExecution()
     }

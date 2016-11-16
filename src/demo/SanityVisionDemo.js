@@ -9,7 +9,8 @@ class SanityVisionDemo extends React.PureComponent {
   constructor(props) {
     super(props)
 
-    this.state = {projectId: getState('projectId')}
+    const firstProjectId = props.projects[0] && props.projects[0].projectId
+    this.state = {projectId: getState('projectId') || firstProjectId}
     this.handleProjectChange = this.handleProjectChange.bind(this)
   }
 
@@ -56,8 +57,8 @@ class SanityVisionDemo extends React.PureComponent {
 
           {!this.state.projectId && (
             <ErrorDialog
-              heading="No project ID"
-              error="Please specify a project ID above"
+              heading="No project selected"
+              error="Please select a project from the dropdown in the header"
             />
           )}
         </div>
