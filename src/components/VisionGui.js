@@ -39,6 +39,10 @@ class VisionGui extends React.PureComponent {
   handleQueryExecution() {
     const query = this.state.query
     storeState('lastQuery', query)
+    if (!query) {
+      return
+    }
+
     this.setState({queryInProgress: true})
 
     const queryInProgress = false
