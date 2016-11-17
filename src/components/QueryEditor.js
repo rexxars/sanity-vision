@@ -24,10 +24,12 @@ class QueryEditor extends React.PureComponent {
   render() {
     return (
       <Textarea
-        className="vision_query-editor"
+        className={this.props.className}
         value={this.props.value}
+        style={this.props.style}
         onChange={this.handleChange}
         onKeyUp={this.handleKeyUp}
+        onHeightChange={this.props.onHeightChange}
 
         autoComplete="off"
         autoCorrect="off"
@@ -39,9 +41,16 @@ class QueryEditor extends React.PureComponent {
 }
 
 QueryEditor.propTypes = {
+  className: PropTypes.string,
   onExecute: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string
+  onHeightChange: PropTypes.func,
+  value: PropTypes.string,
+  style: PropTypes.object // eslint-disable-line react/forbid-prop-types
+}
+
+QueryEditor.defaultProps = {
+  className: 'vision_query-editor'
 }
 
 export default QueryEditor

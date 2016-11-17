@@ -370,6 +370,15 @@ babel-core@6.17.0:
     slash "^1.0.0"
     source-map "^0.5.0"
 
+babel-eslint:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-7.1.0.tgz#d506a5174ba224e25a2d17e128e2ba8987139ddc"
+  dependencies:
+    babel-traverse "^6.15.0"
+    babel-types "^6.15.0"
+    babylon "^6.11.2"
+    lodash.pickby "^4.6.0"
+
 babel-eslint@7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-7.0.0.tgz#54e51b4033f54ac81326ecea4c646a779935196d"
@@ -794,6 +803,13 @@ babel-plugin-transform-flow-strip-types@^6.3.13:
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-flow-strip-types/-/babel-plugin-transform-flow-strip-types-6.18.0.tgz#4d3e642158661e9b40db457c004a30817fa32592"
   dependencies:
     babel-plugin-syntax-flow "^6.18.0"
+    babel-runtime "^6.0.0"
+
+babel-plugin-transform-object-rest-spread:
+  version "6.19.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.19.0.tgz#f6ac428ee3cb4c6aa00943ed1422ce813603b34c"
+  dependencies:
+    babel-plugin-syntax-object-rest-spread "^6.8.0"
     babel-runtime "^6.0.0"
 
 babel-plugin-transform-object-rest-spread@6.16.0:

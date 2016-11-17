@@ -28,12 +28,15 @@ class ParamsEditor extends React.PureComponent {
   }
 
   render() {
+    const {className, classNameInvalid} = this.props
     return (
       <Textarea
-        className={classNames('vision_params-editor', {invalid: !this.state.valid})}
+        className={classNames(className, {[classNameInvalid]: !this.state.valid})}
         value={this.props.value}
+        style={this.props.style}
         onChange={this.handleChange}
         onKeyUp={this.handleKeyUp}
+        onHeightChange={this.props.onHeightChange}
 
         autoComplete="off"
         autoCorrect="off"
@@ -45,13 +48,19 @@ class ParamsEditor extends React.PureComponent {
 }
 
 ParamsEditor.propTypes = {
+  className: PropTypes.string,
+  classNameInvalid: PropTypes.string,
   onExecute: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string
+  onHeightChange: PropTypes.func,
+  value: PropTypes.string,
+  style: PropTypes.object // eslint-disable-line react/forbid-prop-types
 }
 
 ParamsEditor.defaultProps = {
-  value: '{\n  \n}'
+  value: '{\n  \n}',
+  className: 'vision_params-editor',
+  classNameInvalid: 'vision_params-editor-invalid'
 }
 
 export default ParamsEditor

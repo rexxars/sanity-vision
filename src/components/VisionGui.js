@@ -1,11 +1,9 @@
 import React, {PropTypes} from 'react'
-import classNames from 'classnames'
 import {storeState, getState} from '../util/localState'
 import tryParseParams from '../util/tryParseParams'
 import DelayedSpinner from './DelayedSpinner'
 import QueryEditor from './QueryEditor'
 import ParamsEditor from './ParamsEditor'
-import Dropdown from './Dropdown'
 import ResultList from './ResultList'
 import NoResultsDialog from './NoResultsDialog'
 import QueryErrorDialog from './QueryErrorDialog'
@@ -20,13 +18,15 @@ class VisionGui extends React.PureComponent {
       query: lastQuery,
       params: lastParams && tryParseParams(lastParams),
       rawParams: lastParams,
-      queryInProgress: Boolean(lastQuery)
+      queryInProgress: Boolean(lastQuery),
+      editorHeight: 100
     }
 
     this.handleChangeDataset = this.handleChangeDataset.bind(this)
     this.handleQueryExecution = this.handleQueryExecution.bind(this)
     this.handleQueryChange = this.handleQueryChange.bind(this)
     this.handleParamsChange = this.handleParamsChange.bind(this)
+    this.handleHeightChange = this.handleHeightChange.bind(this)
   }
 
   componentDidMount() {
@@ -76,52 +76,69 @@ class VisionGui extends React.PureComponent {
     this.setState({rawParams: data.raw, params: data.parsed})
   }
 
+  handleHeightChange(newHeight) {
+    if (this.state.editorHeight !== newHeight) {
+      this.setState({editorHeight: Math.max(newHeight, 75)})
+    }
+  }
+
   render() {
-    const {client} = this.context
+    const {client, components} = this.context
     const {error, query, queryInProgress} = this.state
+    const {Button, Select} = components
+    const styles = this.context.styles.visionGui
     const results = !error && !queryInProgress && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
+
+    // Note that because of react-json-inspector, we need at least one
+    // addressable, non-generated class name. Therefore;
+    // leave `sanity-vision` untouched!
     return (
-      <div className="vision-gui">
+      <div className="sanity-vision">
         <form action="#" className="pure-form pure-form-aligned">
-          <fieldset>
+          <div className={styles.controls}>
             <div className="pure-control-group vision_dataset-select">
-              <label htmlFor="dataset-select">Dataset</label>
-              <Dropdown
+              <label className={styles.datasetSelectorLabel} htmlFor="dataset-select">Dataset</label>
+              <Select
                 id="dataset-select"
+                className={styles.datasetSelector}
                 defaultValue={client.config().dataset}
                 values={datasets}
                 onChange={this.handleChangeDataset}
               />
 
-              <button
+              <Button
                 onClick={this.handleQueryExecution}
-                className={classNames(
-                  'pure-button',
-                  'pure-button-primary',
-                  'vision_execute-query-button',
-                  {active: queryInProgress}
-                )}
-              >Run query</button>
+                className={styles.executeQueryButton || 'vision_execute-query-button'}
+                loading={queryInProgress}
+                kind="colored"
+              >Run query</Button>
             </div>
-          </fieldset>
+          </div>
 
-          <div className="headers">
-            <h3 className="query">Query</h3>
-            <h3 className="params">Params</h3>
+          <div className={styles.inputLabels || 'inputLabels'}>
+            <h3 className={styles.inputLabelQuery || 'query'}>Query</h3>
+            <h3 className={styles.inputLabelParams || 'params'}>Params</h3>
           </div>
 
           <QueryEditor
+            className={styles.queryEditor}
             value={this.state.query}
             onExecute={this.handleQueryExecution}
             onChange={this.handleQueryChange}
+            onHeightChange={this.handleHeightChange}
+            style={{minHeight: this.state.editorHeight}}
           />
 
           <ParamsEditor
+            className={styles.paramsEditor}
+            classNameInvalid={styles.paramsEditorInvalid}
             value={this.state.rawParams}
             onExecute={this.handleQueryExecution}
             onChange={this.handleParamsChange}
+            onHeightChange={this.handleHeightChange}
+            style={{minHeight: this.state.editorHeight}}
           />
         </form>
 
@@ -141,7 +158,9 @@ VisionGui.propTypes = {
 }
 
 VisionGui.contextTypes = {
-  client: PropTypes.shape({fetch: PropTypes.func}).isRequired
+  client: PropTypes.shape({fetch: PropTypes.func}).isRequired,
+  styles: PropTypes.object,
+  components: PropTypes.object,
 }
 
 export default VisionGui

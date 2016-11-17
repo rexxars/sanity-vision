@@ -1,13 +1,31 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
+import client from 'part:@sanity/base/client'
+import Button from 'part:@sanity/components/buttons/default'
+import Select from './sanity/Select'
 import Vision from './Vision'
 
-// Used in Sanity project
-function SanityVision(props) {
-  return <Vision client={props.client} />
+import visionGui from './css/visionGui.css'
+import jsonInspector from './css/jsonInspector.css'
+
+const components = {
+  Button,
+  Select
 }
 
-SanityVision.propTypes = {
-  client: PropTypes.func.isRequired
+const styles = {
+  visionGui,
+  jsonInspector
+}
+
+// Used in Sanity project
+function SanityVision() {
+  return (
+    <Vision
+      styles={styles}
+      components={components}
+      client={client}
+    />
+  )
 }
 
 module.exports = SanityVision

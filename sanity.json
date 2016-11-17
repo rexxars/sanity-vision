@@ -5,8 +5,8 @@
   },
   "parts": [
     {
-      "name": "part:sanity-vision/root",
-      "path": "SanityVision.js"
+      "implements": "part:@sanity/base/tool",
+      "path": "VisionTool.js"
     }
   ]
 }

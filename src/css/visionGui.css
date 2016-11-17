@@ -1,0 +1,57 @@
+.datasetSelector {
+  composes: select from 'part:@sanity/components/selects/default-style';
+}
+
+.datasetSelectorLabel {
+  composes: level_2 from 'part:@sanity/components/labels/default-style';
+  margin-right: 20px;
+}
+
+.executeQueryButton {
+  float: right;
+}
+
+.querySplit {
+  display: inline-block;
+  margin: 0.25em 0 0.1em 0;
+}
+
+.inputLabelQuery {
+  composes: querySplit;
+  width: 70%;
+}
+
+.inputLabelParams {
+  composes: querySplit;
+  width: 30%;
+}
+
+.textarea {
+  composes: textarea from 'part:@sanity/components/textareas/default-style';
+  font-family: Consolas, monospace;
+}
+
+.queryEditor {
+  composes: textarea;
+  width: 70% !important;
+}
+
+.paramsEditor {
+  composes: textarea;
+  width: 30% !important;
+}
+
+.paramsEditorInvalid {
+  composes: paramsEditor;
+  background: red;
+}
+
+.controls {
+  margin: 10px 0;
+}
+
+.controls:after {
+  content: ' ';
+  display: block;
+  clear: both;
+}

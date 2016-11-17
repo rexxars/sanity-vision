@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import createClient from '@sanity/client'
 import ErrorDialog from '../components/ErrorDialog'
 import {getState, storeState} from '../util/localState'
-import SanityVision from '../Vision'
+import InsanityVision from '../InsanityVision'
 import Header from './Header'
 
 class SanityVisionDemo extends React.PureComponent {
@@ -52,7 +52,7 @@ class SanityVisionDemo extends React.PureComponent {
         <div className="vision">
           {this.state.client && (
             // We're using key here to force a re-render on project ID change
-            <SanityVision key={this.state.projectId} client={this.state.client} />
+            <InsanityVision key={this.state.projectId} client={this.state.client} />
           )}
 
           {!this.state.projectId && (

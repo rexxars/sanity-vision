@@ -38,20 +38,20 @@
   font-family: Consolas, monospace;
 }
 
-.vision .headers h3 {
+.vision .inputLabels h3 {
   display: inline-block;
   margin: 0 0 0.25em 0;
 }
 
-.vision .vision_query-editor, .vision .headers .query {
+.vision .vision_query-editor, .vision .inputLabels .query {
   width: 70%;
 }
 
-.vision .vision_params-editor, .vision .headers .params {
+.vision .vision_params-editor, .vision .inputLabels .params {
   width: 30%;
 }
 
-.vision .vision_params-editor.invalid {
+.vision .vision_params-editor-invalid {
   background: #e74c3c;
   color: #fff;
 }
@@ -84,7 +84,7 @@
   transition: padding-left 0.4s ease;
 }
 
-.vision .vision_execute-query-button.active {
+.vision .vision_execute-query-button.loading {
   background-size: 25px;
   background-position: 5px 50%;
   background-repeat: no-repeat;
