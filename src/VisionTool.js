@@ -1,9 +1,9 @@
 import React from 'react'
 import SanityVision from './SanityVision'
-import {createRoute} from 'part:@sanity/base/router'
+import {route} from 'part:@sanity/base/router'
 
 export default {
-  router: createRoute('/*'),
+  router: route('/*'),
   name: 'Vision',
   icon: function VisionIcon() {
     return <div />
