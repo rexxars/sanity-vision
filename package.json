@@ -1,5 +1,5 @@
 {
-  "name": "sanity-vision",
+  "name": "sanity-plugin-vision",
   "version": "1.0.0",
   "description": "React-based data management tool for Sanity projects",
   "main": "lib/InsanityVision.js",
