@@ -1,10 +1,9 @@
 import React, {PropTypes} from 'react'
 
 function Dropdown(props) {
-  const {id, defaultValue, className, values, onChange} = props
-  const defVal = defaultValue || values[0]
+  const {id, value, className, values, onChange} = props
   return (
-    <select id={id} className={className} defaultValue={defVal} onChange={onChange}>
+    <select id={id} className={className} value={value} onChange={onChange}>
       {values.map(val => <option key={val}>{val}</option>)}
     </select>
   )
@@ -15,7 +14,7 @@ Dropdown.propTypes = {
   onChange: PropTypes.func,
   className: PropTypes.string,
   values: PropTypes.arrayOf(PropTypes.string),
-  defaultValue: PropTypes.string
+  value: PropTypes.string
 }
 
 Dropdown.defaultProps = {

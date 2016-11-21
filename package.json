@@ -28,13 +28,14 @@
     "classnames": "^2.2.5",
     "in-publish": "^2.0.0",
     "moment": "^2.16.0",
+    "query-string": "^4.2.3",
     "react-json-inspector": "^7.0.0",
     "react-spinner": "^0.2.6",
     "react-textarea-autosize": "^4.0.5"
   },
   "devDependencies": {
     "@sanity/check": "^0.0.2",
-    "@sanity/client": "^0.3.9",
+    "@sanity/client": "^0.3.11",
     "babel-cli": "^6.9.0",
     "babel-eslint": "^7.1.0",
     "babel-loader": "^6.2.7",

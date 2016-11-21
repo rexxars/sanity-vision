@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react'
+import queryString from 'query-string'
 import {storeState, getState} from '../util/localState'
 import tryParseParams from '../util/tryParseParams'
 import DelayedSpinner from './DelayedSpinner'
@@ -7,6 +8,8 @@ import ParamsEditor from './ParamsEditor'
 import ResultList from './ResultList'
 import NoResultsDialog from './NoResultsDialog'
 import QueryErrorDialog from './QueryErrorDialog'
+
+const sanityUrl = /\.api\.sanity\.io.*?(?:query|listen)\/(.*?)\?(.*)/
 
 class VisionGui extends React.PureComponent {
   constructor() {
@@ -27,6 +30,7 @@ class VisionGui extends React.PureComponent {
     this.handleQueryChange = this.handleQueryChange.bind(this)
     this.handleParamsChange = this.handleParamsChange.bind(this)
     this.handleHeightChange = this.handleHeightChange.bind(this)
+    this.handlePaste = this.handlePaste.bind(this)
   }
 
   componentDidMount() {
@@ -37,11 +41,55 @@ class VisionGui extends React.PureComponent {
     if (this.state.query) {
       this.handleQueryExecution()
     }
+
+    window.document.addEventListener('paste', this.handlePaste)
+  }
+
+  handlePaste(evt) {
+    const data = evt.clipboardData.getData('text/plain')
+    const match = data.match(sanityUrl)
+    if (!match) {
+      return
+    }
+
+    const [, dataset, urlQuery] = match
+    const qs = queryString.parse(urlQuery)
+    let parts
+
+    try {
+      parts = this.parseApiQueryString(qs)
+    } catch (err) {
+      console.warn('Error while trying to parse API URL: ', err.message) // eslint-disable-line no-console
+      return // Give up on error
+    }
+
+    if (this.context.client.config().dataset !== dataset) {
+      this.handleChangeDataset({target: {value: dataset}})
+    }
+
+    evt.preventDefault()
+    this.setState({
+      query: parts.query,
+      params: parts.params,
+      rawParams: JSON.stringify(parts.params, null, 2)
+    })
+  }
+
+  parseApiQueryString(qs) {
+    const params = Object.keys(qs)
+      .filter(key => key[0] === '$')
+      .reduce((keep, key) => {
+        keep[key.substr(1)] = JSON.parse(qs[key])
+        return keep
+      }, {})
+
+    return {query: qs.query, params}
   }
 
   handleChangeDataset(evt) {
     const dataset = evt.target.value
     storeState('dataset', dataset)
+    this.setState({dataset})
     this.context.client.config({dataset})
     this.handleQueryExecution()
   }
@@ -103,7 +151,7 @@ class VisionGui extends React.PureComponent {
               <Select
                 id="dataset-select"
                 className={styles.datasetSelector}
-                defaultValue={client.config().dataset}
+                value={this.state.dataset || client.config().dataset}
                 values={datasets}
                 onChange={this.handleChangeDataset}
               />
