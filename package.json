@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@sanity/check": "^0.0.2",
-    "@sanity/client": "^0.3.11",
+    "@sanity/client": "^0.3.12",
     "babel-cli": "^6.9.0",
     "babel-eslint": "^7.1.0",
     "babel-loader": "^6.2.7",
