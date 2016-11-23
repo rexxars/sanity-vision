@@ -12,8 +12,8 @@ import QueryErrorDialog from './QueryErrorDialog'
 const sanityUrl = /\.api\.sanity\.io.*?(?:query|listen)\/(.*?)\?(.*)/
 
 class VisionGui extends React.PureComponent {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     const lastQuery = getState('lastQuery')
     const lastParams = getState('lastParams')
@@ -138,12 +138,13 @@ class VisionGui extends React.PureComponent {
     const results = !error && !queryInProgress && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
+    const visionClass = ['sanity-vision', this.context.styles.visionGui.root].filter(Boolean).join(' ')
 
     // Note that because of react-json-inspector, we need at least one
     // addressable, non-generated class name. Therefore;
     // leave `sanity-vision` untouched!
     return (
-      <div className="sanity-vision">
+      <div className={visionClass}>
         <form action="#" className="pure-form pure-form-aligned">
           <div className={styles.controls}>
             <div className="pure-control-group vision_dataset-select">

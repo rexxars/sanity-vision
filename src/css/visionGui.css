@@ -1,3 +1,7 @@
+.root {
+  padding: 0 10px;
+}
+
 .datasetSelector {
   composes: select from 'part:@sanity/components/selects/default-style';
 }
