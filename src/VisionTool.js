@@ -4,7 +4,8 @@ import {route} from 'part:@sanity/base/router'
 
 export default {
   router: route('/*'),
-  name: 'Vision',
+  name: 'vision',
+  title: 'Vision',
   icon: function VisionIcon() {
     return <div />
   },
