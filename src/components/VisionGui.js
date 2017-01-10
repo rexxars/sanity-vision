@@ -161,7 +161,7 @@ class VisionGui extends React.PureComponent {
                 onClick={this.handleQueryExecution}
                 className={styles.executeQueryButton || 'vision_execute-query-button'}
                 loading={queryInProgress}
-                kind="colored"
+                kind="default"
               >Run query</Button>
             </div>
           </div>
