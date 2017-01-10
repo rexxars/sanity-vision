@@ -1,6 +1,6 @@
 {
   "name": "sanity-plugin-vision",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "React-based data management tool for Sanity projects",
   "main": "lib/InsanityVision.js",
   "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
