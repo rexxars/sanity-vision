@@ -4,6 +4,13 @@ import ErrorDialog from '../components/ErrorDialog'
 import {getState, storeState} from '../util/localState'
 import InsanityVision from '../InsanityVision'
 import Header from './Header'
+import {client as clientConfig} from './config'
+
+const getClientConfig = (newConfig = {}) => ({
+  ...clientConfig.client,
+  projectId: newConfig.projectId || getState('projectId'),
+  dataset: newConfig.dataset || getState('dataset')
+})
 
 class SanityVisionDemo extends React.PureComponent {
   constructor(props) {
@@ -14,17 +21,10 @@ class SanityVisionDemo extends React.PureComponent {
     this.handleProjectChange = this.handleProjectChange.bind(this)
   }
 
-  getClientConfig(newConfig = {}) {
-    return {
-      projectId: newConfig.projectId || getState('projectId'),
-      dataset: newConfig.dataset || getState('dataset')
-    }
-  }
-
   handleProjectChange(event) {
     event.preventDefault()
     const projectId = event.target.value
-    const config = this.getClientConfig({projectId})
+    const config = getClientConfig({projectId})
     const client = createClient(config)
 
     storeState('projectId', projectId)
@@ -34,7 +34,7 @@ class SanityVisionDemo extends React.PureComponent {
   componentWillMount() {
     const {projectId} = this.state
     if (projectId) {
-      this.setState({client: createClient(this.getClientConfig({projectId}))})
+      this.setState({client: createClient(getClientConfig({projectId}))})
     }
   }
 

@@ -3,6 +3,7 @@ import createClient from '@sanity/client'
 import DelayedSpinner from '../components/DelayedSpinner'
 import ErrorDialog from '../components/ErrorDialog'
 import SanityVisionDemo from './SanityVisionDemo'
+import config from './config'
 
 class DemoContainer extends React.PureComponent {
   constructor() {
@@ -11,14 +12,12 @@ class DemoContainer extends React.PureComponent {
   }
 
   componentDidMount() {
-    const client = createClient({useProjectHostname: false})
-    client.requestObservable({uri: '/projects'})
-      .filter(event => event.type === 'response')
-      .map(event => event.body)
-      .subscribe({
-        next: projects => this.setState({projects}),
-        error: error => this.setState({error})
-      })
+    const cfg = {...config.client, useProjectHostname: false}
+    const client = createClient(cfg)
+    client.observable.request({uri: '/projects'}).subscribe({
+      next: projects => this.setState({projects}),
+      error: error => this.setState({error})
+    })
   }
 
   render() {

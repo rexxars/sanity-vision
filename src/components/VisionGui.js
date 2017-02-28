@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import queryString from 'query-string'
 import {storeState, getState} from '../util/localState'
+import parseApiQueryString from '../util/parseApiQueryString'
 import tryParseParams from '../util/tryParseParams'
 import DelayedSpinner from './DelayedSpinner'
 import QueryEditor from './QueryEditor'
@@ -38,10 +39,6 @@ class VisionGui extends React.PureComponent {
     const dataset = getState('dataset', firstDataset)
     this.context.client.config({dataset})
 
-    if (this.state.query) {
-      this.handleQueryExecution()
-    }
-
     window.document.addEventListener('paste', this.handlePaste)
   }
 
@@ -57,7 +54,7 @@ class VisionGui extends React.PureComponent {
     let parts
 
     try {
-      parts = this.parseApiQueryString(qs)
+      parts = parseApiQueryString(qs)
     } catch (err) {
       console.warn('Error while trying to parse API URL: ', err.message) // eslint-disable-line no-console
       return // Give up on error
@@ -73,17 +70,6 @@ class VisionGui extends React.PureComponent {
       params: parts.params,
       rawParams: JSON.stringify(parts.params, null, 2)
     })
-  }
-
-  parseApiQueryString(qs) {
-    const params = Object.keys(qs)
-      .filter(key => key[0] === '$')
-      .reduce((keep, key) => {
-        keep[key.substr(1)] = JSON.parse(qs[key])
-        return keep
-      }, {})
-
-    return {query: qs.query, params}
   }
 
   handleChangeDataset(evt) {
@@ -138,11 +124,11 @@ class VisionGui extends React.PureComponent {
     const results = !error && !queryInProgress && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
-    const visionClass = ['sanity-vision', this.context.styles.visionGui.root].filter(Boolean).join(' ')
 
     // Note that because of react-json-inspector, we need at least one
     // addressable, non-generated class name. Therefore;
     // leave `sanity-vision` untouched!
+    const visionClass = ['sanity-vision', this.context.styles.visionGui.root].filter(Boolean).join(' ')
     return (
       <div className={visionClass}>
         <form action="#" className="pure-form pure-form-aligned">
