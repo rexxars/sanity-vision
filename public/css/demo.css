@@ -98,6 +98,12 @@
   height: 64px;
 }
 
+.vision .queryTiming {
+  margin: -10px 0 0 0;
+  padding: 0 5px;
+  font-size: 0.8em;
+}
+
 /* Json inspector */
 .json-inspector,
 .json-inspector__selection {

@@ -89,17 +89,26 @@ class VisionGui extends React.PureComponent {
     this.setState({
       queryInProgress: !paramsError && Boolean(query),
       error: paramsError || undefined,
-      results: null
+      results: null,
+      queryTime: null,
+      e2eTime: null
     })
 
     if (!query || paramsError) {
       return
     }
 
-    const queryInProgress = false
-    this.context.client.fetch(query, params)
-      .then(results => this.setState({results, query, queryInProgress, error: null}))
-      .catch(error => this.setState({error, query, queryInProgress}))
+    const queryStart = Date.now()
+    this.context.client.fetch(query, params, {filterResponse: false})
+      .then(res => this.setState({
+        query,
+        queryTime: res.ms,
+        e2eTime: Date.now() - queryStart,
+        results: res.result || [],
+        queryInProgress: false,
+        error: null
+      }))
+      .catch(error => this.setState({error, query, queryInProgress: false}))
   }
 
   handleQueryChange(data) {
@@ -118,7 +127,7 @@ class VisionGui extends React.PureComponent {
 
   render() {
     const {client, components} = this.context
-    const {error, query, queryInProgress} = this.state
+    const {error, query, queryInProgress, queryTime, e2eTime} = this.state
     const {Button, Select} = components
     const styles = this.context.styles.visionGui
     const results = !error && !queryInProgress && this.state.results
@@ -175,6 +184,10 @@ class VisionGui extends React.PureComponent {
             onHeightChange={this.handleHeightChange}
             style={{minHeight: this.state.editorHeight}}
           />
+
+          {queryTime && (
+            <p className={styles.queryTiming || 'queryTiming'}>Query time: {queryTime}ms (end-to-end: {e2eTime}ms)</p>
+          )}
         </form>
 
         {queryInProgress && <DelayedSpinner />}
