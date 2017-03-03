@@ -22,7 +22,7 @@ class VisionGui extends React.PureComponent {
       query: lastQuery,
       params: lastParams && tryParseParams(lastParams),
       rawParams: lastParams,
-      queryInProgress: Boolean(lastQuery),
+      queryInProgress: false,
       editorHeight: 100
     }
 
