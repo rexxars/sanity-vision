@@ -27,6 +27,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "in-publish": "^2.0.0",
+    "json-lexer": "^1.1.1",
     "moment": "^2.17.1",
     "query-string": "^4.3.2",
     "react-json-inspector": "^7.0.0",

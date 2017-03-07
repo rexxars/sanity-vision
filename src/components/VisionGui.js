@@ -18,6 +18,8 @@ class VisionGui extends React.PureComponent {
 
     const lastQuery = getState('lastQuery')
     const lastParams = getState('lastParams')
+
+    this.subscribers = {}
     this.state = {
       query: lastQuery,
       params: lastParams && tryParseParams(lastParams),
@@ -27,6 +29,8 @@ class VisionGui extends React.PureComponent {
     }
 
     this.handleChangeDataset = this.handleChangeDataset.bind(this)
+    this.handleListenExecution = this.handleListenExecution.bind(this)
+    this.handleListenerMutation = this.handleListenerMutation.bind(this)
     this.handleQueryExecution = this.handleQueryExecution.bind(this)
     this.handleQueryChange = this.handleQueryChange.bind(this)
     this.handleParamsChange = this.handleParamsChange.bind(this)
@@ -40,6 +44,11 @@ class VisionGui extends React.PureComponent {
     this.context.client.config({dataset})
 
     window.document.addEventListener('paste', this.handlePaste)
+  }
+
+  componentWillUnmount() {
+    this.cancelQuery()
+    this.cancelListener()
   }
 
   handlePaste(evt) {
@@ -72,6 +81,24 @@ class VisionGui extends React.PureComponent {
     })
   }
 
+  cancelQuery() {
+    if (!this.subscribers.query) {
+      return
+    }
+
+    this.subscribers.query.unsubscribe()
+    this.subscribers.query = null
+  }
+
+  cancelListener() {
+    if (!this.subscribers.listen) {
+      return
+    }
+
+    this.subscribers.listen.unsubscribe()
+    this.subscribers.listen = null
+  }
+
   handleChangeDataset(evt) {
     const dataset = evt.target.value
     storeState('dataset', dataset)
@@ -80,14 +107,67 @@ class VisionGui extends React.PureComponent {
     this.handleQueryExecution()
   }
 
-  handleQueryExecution() {
-    const {query, params, rawParams} = this.state
+  handleListenerMutation(mut) {
+    const listenMutations = [mut].concat(this.state.listenMutations)
+    if (listenMutations.length > 50) {
+      listenMutations.pop()
+    }
+
+    this.setState({listenMutations})
+  }
+
+  handleListenExecution() {
+    const {query, params, rawParams, listenInProgress} = this.state
+    if (listenInProgress) {
+      this.cancelListener()
+      this.setState({listenInProgress: false})
+      return
+    }
+
+    const client = this.context.client
     const paramsError = params instanceof Error && params
     storeState('lastQuery', query)
     storeState('lastParams', rawParams)
 
+    this.cancelQuery()
+
+    this.setState({
+      listenMutations: [],
+      queryInProgress: false,
+      listenInProgress: !paramsError && Boolean(query),
+      error: paramsError || undefined,
+      results: null,
+      queryTime: null,
+      e2eTime: null
+    })
+
+    if (!query || paramsError) {
+      return
+    }
+
+    this.subscribers.listen = client.listen(query, params, {}).subscribe({
+      next: this.handleListenerMutation,
+      error: error => this.setState({
+        error,
+        query,
+        listenInProgress: false
+      })
+    })
+  }
+
+  handleQueryExecution() {
+    const {query, params, rawParams} = this.state
+    const client = this.context.client.observable
+    const paramsError = params instanceof Error && params
+    storeState('lastQuery', query)
+    storeState('lastParams', rawParams)
+
+    this.cancelListener()
+
     this.setState({
       queryInProgress: !paramsError && Boolean(query),
+      listenInProgress: false,
+      listenMutations: [],
       error: paramsError || undefined,
       results: null,
       queryTime: null,
@@ -99,16 +179,21 @@ class VisionGui extends React.PureComponent {
     }
 
     const queryStart = Date.now()
-    this.context.client.fetch(query, params, {filterResponse: false})
-      .then(res => this.setState({
+    this.subscribers.query = client.fetch(query, params, {filterResponse: false}).subscribe({
+      next: res => this.setState({
         query,
         queryTime: res.ms,
         e2eTime: Date.now() - queryStart,
         results: res.result || [],
         queryInProgress: false,
         error: null
-      }))
-      .catch(error => this.setState({error, query, queryInProgress: false}))
+      }),
+      error: error => this.setState({
+        error,
+        query,
+        queryInProgress: false
+      })
+    })
   }
 
   handleQueryChange(data) {
@@ -127,7 +212,7 @@ class VisionGui extends React.PureComponent {
 
   render() {
     const {client, components} = this.context
-    const {error, query, queryInProgress, queryTime, e2eTime} = this.state
+    const {error, query, queryInProgress, listenInProgress, queryTime, e2eTime, listenMutations} = this.state
     const {Button, Select} = components
     const styles = this.context.styles.visionGui
     const results = !error && !queryInProgress && this.state.results
@@ -153,11 +238,20 @@ class VisionGui extends React.PureComponent {
               />
 
               <Button
+                onClick={this.handleListenExecution}
+                className={styles.executeQueryButton || 'vision_execute-query-button'}
+                loading={listenInProgress}
+                kind="default">
+                Listen
+              </Button>
+
+              <Button
                 onClick={this.handleQueryExecution}
                 className={styles.executeQueryButton || 'vision_execute-query-button'}
                 loading={queryInProgress}
-                kind="default"
-              >Run query</Button>
+                kind="default">
+                Run query
+              </Button>
             </div>
           </div>
 
@@ -186,7 +280,9 @@ class VisionGui extends React.PureComponent {
           />
 
           {queryTime && (
-            <p className={styles.queryTiming || 'queryTiming'}>Query time: {queryTime}ms (end-to-end: {e2eTime}ms)</p>
+            <p className={styles.queryTiming || 'queryTiming'}>
+              Query time: {queryTime}ms (end-to-end: {e2eTime}ms)
+            </p>
           )}
         </form>
 
@@ -194,6 +290,7 @@ class VisionGui extends React.PureComponent {
         {error && <QueryErrorDialog error={error} />}
         {results && results.length > 0 && <ResultList documents={results} query={query} />}
         {results && results.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
+        {listenMutations && listenMutations.length > 0 && <ResultList documents={listenMutations} />}
       </div>
     )
   }
