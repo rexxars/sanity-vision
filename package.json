@@ -30,6 +30,7 @@
     "json-lexer": "^1.1.1",
     "moment": "^2.17.1",
     "query-string": "^4.3.2",
+    "react-icon-base": "^2.0.4",
     "react-json-inspector": "^7.0.0",
     "react-spinner": "^0.2.6",
     "react-textarea-autosize": "^4.0.5"
