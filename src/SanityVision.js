@@ -6,6 +6,7 @@ import Vision from './Vision'
 
 import visionGui from './css/visionGui.css'
 import jsonInspector from './css/jsonInspector.css'
+import jsonDump from './css/jsonDump.css'
 
 const components = {
   Button,
@@ -13,6 +14,7 @@ const components = {
 }
 
 const styles = {
+  jsonDump,
   visionGui,
   jsonInspector
 }

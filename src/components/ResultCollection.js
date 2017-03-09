@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import JsonInspector from 'react-json-inspector'
 import JsonDump from './JsonDump'
 
-class ResultList extends React.PureComponent {
+class ResultCollection extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -36,24 +36,27 @@ class ResultList extends React.PureComponent {
     return this.props.viewMode === 'inspect' ? (
       <JsonInspector
         className="vision_result-list"
-        data={this.props.documents}
+        data={this.props.data}
         isExpanded={this.shouldExpand}
         search={false}
         filterOptions={{ignoreCase: true}}
       />
     ) : (
-      <JsonDump data={this.props.documents} />
+      <JsonDump data={this.props.data} />
     )
   }
 }
 
-ResultList.propTypes = {
-  documents: PropTypes.arrayOf(PropTypes.object),
+ResultCollection.propTypes = {
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
   viewMode: PropTypes.oneOf(['inspector', 'dump'])
 }
 
-ResultList.defaultProps = {
+ResultCollection.defaultProps = {
   viewMode: 'dump'
 }
 
-export default ResultList
+export default ResultCollection

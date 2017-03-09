@@ -1,0 +1,25 @@
+.punctuator {
+  color: gray;
+}
+
+.number {
+  color: #0086b3;
+}
+
+.string {
+  color: #a54c9f;
+}
+
+.key {
+  color: #183691;
+}
+
+.block {
+  padding: 10px 0;
+  margin: 0;
+  border-bottom: 2px solid #0086b3;
+}
+
+.block:last-child {
+  border-bottom: 0;
+}

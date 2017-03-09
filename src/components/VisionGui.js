@@ -6,7 +6,7 @@ import tryParseParams from '../util/tryParseParams'
 import DelayedSpinner from './DelayedSpinner'
 import QueryEditor from './QueryEditor'
 import ParamsEditor from './ParamsEditor'
-import ResultList from './ResultList'
+import ResultView from './ResultView'
 import NoResultsDialog from './NoResultsDialog'
 import QueryErrorDialog from './QueryErrorDialog'
 
@@ -136,7 +136,7 @@ class VisionGui extends React.PureComponent {
       queryInProgress: false,
       listenInProgress: !paramsError && Boolean(query),
       error: paramsError || undefined,
-      results: null,
+      result: undefined,
       queryTime: null,
       e2eTime: null
     })
@@ -169,7 +169,7 @@ class VisionGui extends React.PureComponent {
       listenInProgress: false,
       listenMutations: [],
       error: paramsError || undefined,
-      results: null,
+      result: undefined,
       queryTime: null,
       e2eTime: null
     })
@@ -184,7 +184,7 @@ class VisionGui extends React.PureComponent {
         query,
         queryTime: res.ms,
         e2eTime: Date.now() - queryStart,
-        results: res.result || [],
+        result: res.result,
         queryInProgress: false,
         error: null
       }),
@@ -212,12 +212,12 @@ class VisionGui extends React.PureComponent {
 
   render() {
     const {client, components} = this.context
-    const {error, query, queryInProgress, listenInProgress, queryTime, e2eTime, listenMutations} = this.state
+    const {error, result, query, queryInProgress, listenInProgress, queryTime, e2eTime, listenMutations} = this.state
     const {Button, Select} = components
     const styles = this.context.styles.visionGui
-    const results = !error && !queryInProgress && this.state.results
     const dataset = client.config().dataset
     const datasets = this.props.datasets.map(set => set.name)
+    const hasResult = !error && !queryInProgress && typeof result !== 'undefined'
 
     // Note that because of react-json-inspector, we need at least one
     // addressable, non-generated class name. Therefore;
@@ -279,7 +279,7 @@ class VisionGui extends React.PureComponent {
             style={{minHeight: this.state.editorHeight}}
           />
 
-          {queryTime && (
+          {typeof queryTime === 'number' && (
             <p className={styles.queryTiming || 'queryTiming'}>
               Query time: {queryTime}ms (end-to-end: {e2eTime}ms)
             </p>
@@ -288,9 +288,9 @@ class VisionGui extends React.PureComponent {
 
         {queryInProgress && <DelayedSpinner />}
         {error && <QueryErrorDialog error={error} />}
-        {results && results.length > 0 && <ResultList documents={results} query={query} />}
-        {results && results.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
-        {listenMutations && listenMutations.length > 0 && <ResultList documents={listenMutations} />}
+        {hasResult && <ResultView data={result} query={query} />}
+        {Array.isArray(result) && result.length === 0 && <NoResultsDialog query={query} dataset={dataset} />}
+        {listenMutations && listenMutations.length > 0 && <ResultView data={listenMutations} />}
       </div>
     )
   }
