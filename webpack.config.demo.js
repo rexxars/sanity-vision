@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const path = require('path')
 
 const config = {
-  entry: path.join(__dirname, 'demo', 'js', 'demo.js'),
+  entry: path.join(__dirname, 'src', 'demo', 'demo.js'),
   output: {
     path: path.join(__dirname, 'demo', 'js'),
     filename: 'demo.min.js'
