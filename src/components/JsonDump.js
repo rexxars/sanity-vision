@@ -42,12 +42,14 @@ export default function JsonDump(props) {
   if (!Array.isArray(props.data)) {
     return <JsonBlock data={props.data} />
   }
-
+  const [bracketOpen, bracketClose] = tokenize('[]')
   return (
     <code>
+      {punctuator(bracketOpen)}
       {props.data.map(row =>
         <JsonBlock key={row._rev || row.eventId} data={row} />
       )}
+      {punctuator(bracketClose)}
     </code>
   )
 }
